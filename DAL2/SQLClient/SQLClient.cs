@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 
-namespace DAL2.SQLClient
+namespace DAL2
 {
     public class SQLClient
     {
@@ -72,12 +72,13 @@ namespace DAL2.SQLClient
         /// Create new customer
         /// </summary>
         /// <param name="customer"></param>
-        public void CreateCustomer(Customer customer)
+        public bool CreateCustomer(ref Customer customer)
         {
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = _conn.CreateCommand();
             sqlite_cmd.CommandText = "INSERT INTO Customer(CustomerID, FullName, DateOfBirth) VALUES('" + Guid.NewGuid() + "', '" + customer.FullName + "','" + customer.DateOfBirth + "')";
             sqlite_cmd.ExecuteNonQuery();
+            return true;
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace DAL2.SQLClient
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = _conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer WHERE FullName = " + fullname;
+            sqlite_cmd.CommandText = "SELECT TOP 1 CustomerID, FullName, DateOfBirth FROM Customer WHERE FullName = " + fullname;
             sqlite_datareader = sqlite_cmd.ExecuteReader();
 
             while (sqlite_datareader.Read())

@@ -100,7 +100,8 @@ namespace BL2.Manager
             }
 
             //Does customer name alread exist?
-            result = IsDuplicateFullName(customerInput.FullName);
+            //TODO: needs new overload that is not an http request
+            //result = IsDuplicateFullName(customerInput.FullName);
 
             //Other validations can go inline here. 
 
@@ -140,6 +141,7 @@ namespace BL2.Manager
 
         private bool IsDuplicateFullName(string fullName)
         {
+            //TODO: Overload this call.
             CustomerManager cm = new CustomerManager();
             if (cm.GetCustomerByFullName(fullName) != null)
                 return true;

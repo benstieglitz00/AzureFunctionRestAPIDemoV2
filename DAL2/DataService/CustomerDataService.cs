@@ -9,28 +9,29 @@ namespace DAL2.DataService
 {
     public class CustomerDataService
     {
-        public Customer CreateCustomer(Customer model)
+        public Customer CreateCustomer(Customer customer)
         {
-            Customer result = new Customer();
-            return result;
+            SQLClient customerClient = new SQLClient();
+            customerClient.CreateCustomer(ref customer);
+            return customer;
         }
 
         public Customer GetCustomerByID(Guid id)
         {
-            Customer result = new Customer();
-            return result;
+            SQLClient customerClient = new SQLClient();
+            return customerClient.GetCustomerByID(id);
         }
 
         public List<Customer> GetCustomerByAge(int age)
         {
-            List<Customer> result = new List<Customer>();
-            return result;
+            SQLClient customerClient = new SQLClient();
+            return customerClient.GetCustomerByAge(age);
         }
 
-        public List<Customer> GetCustomerByFullName(string fullName)
+        public Customer GetCustomerByFullName(string fullName)
         {
-            List<Customer> result = new List<Customer>();
-            return result;
+            SQLClient customerClient = new SQLClient();
+            return customerClient.GetCustomerByFullName(fullName);
         }
     }
 }
