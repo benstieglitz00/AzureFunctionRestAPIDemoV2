@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using DAL.Models;
-using BusinessLogic.Manager;
+using DAL2.Models;
+using BL2.Manager;
 using Microsoft.AspNetCore.Http;
 
 namespace AzureFunctionRestAPIDemoV2
