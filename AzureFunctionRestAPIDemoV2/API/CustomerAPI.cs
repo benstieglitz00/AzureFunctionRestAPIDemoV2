@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using DAL2.Models;
 using BL2.Manager;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace AzureFunctionRestAPIDemoV2
 {
@@ -31,21 +32,22 @@ namespace AzureFunctionRestAPIDemoV2
             return new OkObjectResult(customer);
         }
 
-        //[Function("GetAllCustomersByAge")]
-        //public async Task<IActionResult> GetAllCustomersByAge([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{age}")] HttpRequest req, int age)
-        //{
+        [Function("GetAllCustomersByAge")]
+        public async Task<IActionResult> GetAllCustomersByAge([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customers/age")] HttpRequest req, int age)
+        {
+            /*
+             * Test calls from postman: http://localhost:7195/api/customers/age?age=45
+             */
 
-        //    string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            CustomerManager cm = new CustomerManager();
 
-        //    CustomerManager cm = new CustomerManager();
+            var customer = cm.GetCustomerByAge(age);
 
-        //    var customer = cm.CreateCustomer(requestBody);
-
-        //    return new OkObjectResult(customer);
-        //}
+            return new OkObjectResult(customer);
+        }
 
         [Function("GetCustomerByID")]
-        public async Task<IActionResult> GetCustomerByID([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{guid}" )] HttpRequest req, Guid guid)
+        public async Task<IActionResult> GetCustomerByID([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customers/id")] HttpRequest req, Guid guid)
         {
 
             CustomerManager cm = new CustomerManager();

@@ -158,10 +158,9 @@ namespace DAL2
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
+                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"].ToString())
                     };
-
-                }
+                };
 
                 _conn.Close();
             }
@@ -182,38 +181,43 @@ namespace DAL2
         {
             List<Customer> resultList = null;
 
-            DateTime currentDate = DateTime.Today;
-
-            // Calculate the latest possible birth date
-            DateTime latestBirthDate = currentDate.AddYears(-age);
-
-            // Calculate the earliest possible birth date
-            DateTime earliestBirthDate = currentDate.AddYears(-age - 1);
-
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = _conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer WHERE DateOfBirth BETWEEN = " + earliestBirthDate + " AND " + latestBirthDate;
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-
-            while (sqlite_datareader.Read())
+            try
             {
-                string myreader = sqlite_datareader.GetString(0);
-                Console.WriteLine(myreader);
-            }
 
-            while (sqlite_datareader.Read())
-            {
-                Customer c = new Customer
+                DateTime currentDate = DateTime.Today;
+
+                // Calculate the latest possible birth date
+                DateTime latestBirthDate = currentDate.AddYears(-age);
+
+                // Calculate the earliest possible birth date
+                DateTime earliestBirthDate = currentDate.AddYears(-age - 1);
+
+                SQLiteDataReader sqlite_datareader;
+                SQLiteCommand sqlite_cmd;
+                sqlite_cmd = _conn.CreateCommand();
+                sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer WHERE DateOfBirth BETWEEN = " + earliestBirthDate + " AND " + latestBirthDate;
+
+                _conn.Open();
+
+                sqlite_datareader = sqlite_cmd.ExecuteReader();
+                while (sqlite_datareader.Read())
                 {
-                    CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
-                    FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                    DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
-                };
-                resultList.Add(c);
-            }
+                    Customer c = new Customer
+                    {
+                        CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
+                        FullName = Convert.ToString(sqlite_datareader["FullName"]),
+                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
+                    };
 
-            _conn.Close();
+                    resultList.Add(c);
+                }
+
+                _conn.Close();
+            }
+            catch (Exception ex)
+            {
+                _conn.Close();
+            }
 
             return resultList;
         }

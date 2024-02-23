@@ -46,18 +46,13 @@ namespace BL2.Manager
             return result;
         }
 
-        public List<Customer> GetCustomerByAge(string requestBody)
+        public List<Customer> GetCustomerByAge(int age)
         {
             List<Customer> result = new List<Customer>();
 
-            var customerInput = JsonConvert.DeserializeObject<Customer>(requestBody);
-
             CustomerDataService ds = new CustomerDataService();
 
-            if (customerInput != null && customerInput.CustomerID != null)
-            {
-                ds.GetCustomerByID((Guid)customerInput.CustomerID);
-            }
+            result = ds.GetCustomerByAge(age);
 
             return result;
         }
