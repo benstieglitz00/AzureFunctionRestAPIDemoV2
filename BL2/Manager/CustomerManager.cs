@@ -57,7 +57,10 @@ namespace BL2.Manager
 
             CustomerDataService ds = new CustomerDataService();
 
-            ds.GetCustomerByID((Guid)customerInput.CustomerID);
+            if (customerInput != null && customerInput.CustomerID != null)
+            {
+                ds.GetCustomerByID((Guid)customerInput.CustomerID);
+            }
 
             return result;
         }
@@ -70,7 +73,10 @@ namespace BL2.Manager
 
             CustomerDataService ds = new CustomerDataService();
 
-            ds.GetCustomerByID((Guid)customerInput.CustomerID);
+            if (customerInput != null && customerInput.CustomerID != null)
+            {
+                ds.GetCustomerByID((Guid)customerInput.CustomerID);
+            }
 
             return result;
         }
