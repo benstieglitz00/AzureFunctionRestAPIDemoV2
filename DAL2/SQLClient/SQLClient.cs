@@ -7,27 +7,13 @@ namespace DAL2
 {
     public class SQLClient
     {
-        public SQLiteConnection _conn;
+        public static SQLiteConnection _conn = new SQLiteConnection("Data Source=database.db; Version = 3; New = True; Compress = True; ");
 
         public SQLClient()
         {
             //Initialize Table Objects
             InitializeTables();
-
-            //Create SQLite Connection
-            CreateConnection();
         }
-
-        #region Connection Helpers
-        private SQLiteConnection CreateConnection()
-        {
-
-            _conn = new SQLiteConnection("Data Source=database.db; Version = 3; New = True; Compress = True; ");
-            _conn.Open();
-            return _conn;
-
-        }
-        #endregion
 
 
         #region Initialize Tables
@@ -41,12 +27,22 @@ namespace DAL2
 
         private void CreateCustomerTable()
         {
-            SQLiteCommand cmd;
-            //TODO: Correct for DateOnly variable type, not DateTime
-            string CreateSQL = "CREATE TABLE IF NOT EXISTS Customer (CustomerID GUID, FullName NVARCHAR(100), DateOfBirth DATETIME)";
-            cmd = _conn.CreateCommand();
-            cmd.CommandText = CreateSQL;
-            cmd.ExecuteNonQuery();
+            try
+            {
+                SQLiteCommand cmd;
+                //TODO: Correct for DateOnly variable type, not DateTime
+                string CreateSQL = "CREATE TABLE Customer (CustomerID GUID, FullName NVARCHAR(100), DateOfBirth DATETIME)";
+                cmd = _conn.CreateCommand();
+                cmd.CommandText = CreateSQL;
+                _conn.Open();
+                cmd.ExecuteNonQuery();
+                _conn.Close();
+            }
+            catch(Exception ex)
+            {
+                //Log error and close connection
+                _conn.Close();
+            }
         }
         #endregion
 
@@ -74,10 +70,22 @@ namespace DAL2
         /// <param name="customer"></param>
         public bool CreateCustomer(ref Customer customer)
         {
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = _conn.CreateCommand();
-            sqlite_cmd.CommandText = "INSERT INTO Customer(CustomerID, FullName, DateOfBirth) VALUES('" + Guid.NewGuid() + "', '" + customer.FullName + "','" + customer.DateOfBirth + "')";
-            sqlite_cmd.ExecuteNonQuery();
+            try
+            {
+                SQLiteCommand sqlite_cmd;
+                customer.CustomerID = Guid.NewGuid();
+                sqlite_cmd = _conn.CreateCommand();
+                sqlite_cmd.CommandText = "INSERT INTO Customer(CustomerID, FullName, DateOfBirth) VALUES('" + customer.CustomerID + "', '" + customer.FullName + "','" + customer.DateOfBirth + "')";
+                _conn.Open();
+                sqlite_cmd.ExecuteNonQuery();
+                _conn.Close();
+            }
+            catch(Exception ex)
+            {
+                //Log error and close connection
+                _conn.Close();
+            }
+
             return true;
         }
 
@@ -90,30 +98,38 @@ namespace DAL2
         {
             Customer c = null;
 
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = _conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT TOP 1 CustomerID, FullName, DateOfBirth FROM Customer WHERE FullName = " + fullname;
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-
-            while (sqlite_datareader.Read())
+            try
             {
-                string myreader = sqlite_datareader.GetString(0);
-                Console.WriteLine(myreader);
-            }
+                SQLiteDataReader sqlite_datareader;
+                SQLiteCommand sqlite_cmd;
+                sqlite_cmd = _conn.CreateCommand();
+                sqlite_cmd.CommandText = "SELECT TOP 1 CustomerID, FullName, DateOfBirth FROM Customer WHERE FullName = " + fullname;
+                _conn.Open();
+                sqlite_datareader = sqlite_cmd.ExecuteReader();
 
-            while (sqlite_datareader.Read())
-            {
-                c = new Customer
+                while (sqlite_datareader.Read())
                 {
-                    CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
-                    FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                    DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
-                };
+                    string myreader = sqlite_datareader.GetString(0);
+                    Console.WriteLine(myreader);
+                }
 
+                while (sqlite_datareader.Read())
+                {
+                    c = new Customer
+                    {
+                        CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
+                        FullName = Convert.ToString(sqlite_datareader["FullName"]),
+                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
+                    };
+
+                }
+
+                _conn.Close();
             }
-
-            _conn.Close();
+            catch(Exception ex)
+            {
+                _conn.Close();
+            }
 
             return c;
         }
