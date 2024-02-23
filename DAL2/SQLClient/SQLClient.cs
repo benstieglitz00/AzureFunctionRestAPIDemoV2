@@ -143,30 +143,32 @@ namespace DAL2
         {
             Customer c = null;
 
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = _conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer WHERE CustomerID = " + customerID;
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-
-            while (sqlite_datareader.Read())
+            try
             {
-                string myreader = sqlite_datareader.GetString(0);
-                Console.WriteLine(myreader);
-            }
+                SQLiteDataReader sqlite_datareader;
+                SQLiteCommand sqlite_cmd;
+                sqlite_cmd = _conn.CreateCommand();
+                sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer WHERE CustomerID = '" + customerID + "'";
+                _conn.Open();
+                sqlite_datareader = sqlite_cmd.ExecuteReader();
 
-            while (sqlite_datareader.Read())
-            {
-                c = new Customer
+                while (sqlite_datareader.Read())
                 {
-                    CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
-                    FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                    DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
-                };
+                    c = new Customer
+                    {
+                        CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
+                        FullName = Convert.ToString(sqlite_datareader["FullName"]),
+                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
+                    };
 
+                }
+
+                _conn.Close();
             }
-
-            _conn.Close();
+            catch(Exception ex )
+            {
+                _conn.Close();
+            }
 
             return c;
         }

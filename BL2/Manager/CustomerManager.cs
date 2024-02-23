@@ -13,12 +13,11 @@ namespace BL2.Manager
 {
     public class CustomerManager
     {
-        private Customer CreateCustomer(Customer model)
+        private Customer CreateCustomer(Customer customer)
         {
-            Customer result = new Customer();
             CustomerDataService ds = new CustomerDataService();
-            ds.CreateCustomer(model);
-            return result;
+            ds.CreateCustomer(customer);
+            return customer;
         }
 
         public Customer CreateCustomer(string requestBody)
@@ -36,15 +35,13 @@ namespace BL2.Manager
             return result;
         }
 
-        public Customer GetCustomerByID(string requestBody)
+        public Customer GetCustomerByID(Guid customerID)
         {
             Customer result = new Customer();
 
-            var customerInput = JsonConvert.DeserializeObject<Customer>(requestBody);
-
             CustomerDataService ds = new CustomerDataService();
 
-            ds.GetCustomerByID((Guid)customerInput.CustomerID);
+            result = ds.GetCustomerByID(customerID);
 
             return result;
         }

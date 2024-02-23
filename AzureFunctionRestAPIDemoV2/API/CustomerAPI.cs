@@ -31,28 +31,26 @@ namespace AzureFunctionRestAPIDemoV2
             return new OkObjectResult(customer);
         }
 
-        [Function("GetAllCustomersByAge")]
-        public async Task<IActionResult> GetAllCustomersByAge([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{age}")] HttpRequest req)
-        {
+        //[Function("GetAllCustomersByAge")]
+        //public async Task<IActionResult> GetAllCustomersByAge([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{age}")] HttpRequest req, int age)
+        //{
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        //    string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            CustomerManager cm = new CustomerManager();
+        //    CustomerManager cm = new CustomerManager();
 
-            var customer = cm.CreateCustomer(requestBody);
+        //    var customer = cm.CreateCustomer(requestBody);
 
-            return new OkObjectResult(customer);
-        }
+        //    return new OkObjectResult(customer);
+        //}
 
         [Function("GetCustomerByID")]
-        public async Task<IActionResult> GetCustomersByID([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{guid}" )] HttpRequest req)
+        public async Task<IActionResult> GetCustomerByID([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{guid}" )] HttpRequest req, Guid guid)
         {
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             CustomerManager cm = new CustomerManager();
 
-            var customer = cm.GetCustomerByID(requestBody);
+            var customer = cm.GetCustomerByID(guid);
 
             return new OkObjectResult(customer);
         }
