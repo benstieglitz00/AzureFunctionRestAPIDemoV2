@@ -87,7 +87,7 @@ namespace BL2.Manager
             }
             else
             {
-                IsValidAge((DateTime)customerInput.DateOfBirth);
+                IsValidAge((DateOnly)customerInput.DateOfBirth);
                 result = false;
             }
 
@@ -117,12 +117,12 @@ namespace BL2.Manager
             return Regex.IsMatch(fullName, pattern);
         }
 
-        private bool IsValidAge(DateTime dob)
+        private bool IsValidAge(DateOnly dob)
         {
             int age = DateTime.Now.Year - dob.Year;
 
             //determine if your birthday has happened yet.
-            if (dob.Date > DateTime.Now.AddYears(-age))
+            if (DateTime.Parse(dob.ToString()) > DateTime.Now.AddYears(-age))
             {
                 age--;
             }

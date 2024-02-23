@@ -10,6 +10,6 @@ namespace DAL2.Models
     {
         public Guid? CustomerID { get; set; }
         public string FullName { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
     }
 }

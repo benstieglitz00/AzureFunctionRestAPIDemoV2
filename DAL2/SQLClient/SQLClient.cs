@@ -31,7 +31,7 @@ namespace DAL2
             {
                 SQLiteCommand cmd;
                 //TODO: Correct for DateOnly variable type, not DateTime
-                string CreateSQL = "CREATE TABLE Customer (CustomerID GUID, FullName NVARCHAR(100), DateOfBirth DATETIME)";
+                string CreateSQL = "CREATE TABLE Customer (CustomerID GUID, FullName NVARCHAR(100), DateOfBirth NVARCHAR(100)";
                 cmd = _conn.CreateCommand();
                 cmd.CommandText = CreateSQL;
                 _conn.Open();
@@ -103,7 +103,7 @@ namespace DAL2
                 SQLiteDataReader sqlite_datareader;
                 SQLiteCommand sqlite_cmd;
                 sqlite_cmd = _conn.CreateCommand();
-                sqlite_cmd.CommandText = "SELECT TOP 1 CustomerID, FullName, DateOfBirth FROM Customer WHERE FullName = " + fullname;
+                sqlite_cmd.CommandText = "SELECT TOP 1 CustomerID, FullName, DateOfBirth FROM Customer WHERE FullName = '" + fullname + "'";
                 _conn.Open();
                 sqlite_datareader = sqlite_cmd.ExecuteReader();
 
@@ -119,7 +119,7 @@ namespace DAL2
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
+                        DateOfBirth = (DateOnly)(sqlite_datareader["DateOfBirth"])
                     };
 
                 }
@@ -158,7 +158,7 @@ namespace DAL2
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"].ToString())
+                        DateOfBirth = (DateOnly)(sqlite_datareader["DateOfBirth"])
                     };
                 };
 
@@ -206,7 +206,7 @@ namespace DAL2
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = Convert.ToDateTime(sqlite_datareader["DateOfBirth"])
+                        DateOfBirth = (DateOnly)(sqlite_datareader["DateOfBirth"])
                     };
 
                     resultList.Add(c);
