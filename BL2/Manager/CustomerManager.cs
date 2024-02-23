@@ -82,8 +82,16 @@ namespace BL2.Manager
             //Is the customer a valid name?
             result = IsValidFullName(customerInput.FullName);
 
-            //Is the date of birth a valid date?
-            result = IsValidAge((DateTime)customerInput.DateOfBirth);
+            //Is the date of birth a valid date?    
+            if (customerInput.DateOfBirth == null)
+            {
+                result = false;
+            }
+            else
+            {
+                IsValidAge((DateTime)customerInput.DateOfBirth);
+                result = false;
+            }
 
             //Does customer name alread exist?
             result = IsDuplicateFullName(customerInput.FullName);

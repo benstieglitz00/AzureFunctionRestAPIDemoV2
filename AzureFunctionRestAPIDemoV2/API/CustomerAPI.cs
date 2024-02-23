@@ -21,7 +21,6 @@ namespace AzureFunctionRestAPIDemoV2
         [Function("CreateCustomer")]
         public async Task<IActionResult> CreateCustomer([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "customer")] HttpRequest req)
         {
-            var test = req;
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
