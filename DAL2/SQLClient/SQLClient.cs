@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DAL2
 {
@@ -94,9 +95,10 @@ namespace DAL2
         /// </summary>
         /// <param name="fullname"></param>
         /// <returns></returns>
-        public Customer GetCustomerByFullName(String fullname)
+        public Customer GetCustomerByFullName(System.String fullname)
         {
             Customer c = null;
+            DateOnly date = new DateOnly();
 
             try
             {
@@ -107,19 +109,15 @@ namespace DAL2
                 _conn.Open();
                 sqlite_datareader = sqlite_cmd.ExecuteReader();
 
-                while (sqlite_datareader.Read())
-                {
-                    string myreader = sqlite_datareader.GetString(0);
-                    Console.WriteLine(myreader);
-                }
 
                 while (sqlite_datareader.Read())
                 {
+                    DateOnly.TryParseExact((sqlite_datareader["DateOfBirth"].ToString()), "MM-dd-yyyy", out date);
                     c = new Customer
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = (DateOnly)(sqlite_datareader["DateOfBirth"])
+                        DateOfBirth = date
                     };
 
                 }
@@ -142,6 +140,7 @@ namespace DAL2
         public Customer GetCustomerByID(Guid customerID)
         {
             Customer c = null;
+            DateOnly date = new DateOnly();
 
             try
             {
@@ -154,11 +153,21 @@ namespace DAL2
 
                 while (sqlite_datareader.Read())
                 {
+                    //TODO: Fix bug where Date is not saved or retrived from JSON correctly. 
+                    if(!string.IsNullOrWhiteSpace(sqlite_datareader["DateOfBirth"].ToString()))
+                    {
+                        DateOnly.TryParseExact((sqlite_datareader["DateOfBirth"].ToString()), "MM-dd-yyyy", out date);
+                    }
+                    else
+                    {
+                        date = new DateOnly(1999, 1, 1);
+                    }
+
                     c = new Customer
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = (DateOnly)(sqlite_datareader["DateOfBirth"])
+                        DateOfBirth = date
                     };
                 };
 
@@ -180,6 +189,7 @@ namespace DAL2
         public List<Customer> GetCustomerByAge(int age)
         {
             List<Customer> resultList = null;
+            DateOnly date = new DateOnly();
 
             try
             {
@@ -202,11 +212,12 @@ namespace DAL2
                 sqlite_datareader = sqlite_cmd.ExecuteReader();
                 while (sqlite_datareader.Read())
                 {
+                    DateOnly.TryParseExact((sqlite_datareader["DateOfBirth"].ToString()), "MM-dd-yyyy", out date);
                     Customer c = new Customer
                     {
                         CustomerID = Guid.Parse(Convert.ToString(sqlite_datareader["CustomerID"])),
                         FullName = Convert.ToString(sqlite_datareader["FullName"]),
-                        DateOfBirth = (DateOnly)(sqlite_datareader["DateOfBirth"])
+                        DateOfBirth = date
                     };
 
                     resultList.Add(c);

@@ -24,13 +24,22 @@ namespace BL2.Manager
         {
             Customer result = new Customer();
 
-            var customerInput = JsonConvert.DeserializeObject<Customer>(requestBody);
+            try
+            {
 
-            //Validate customer
-            ValidateCustomerRequest(customerInput);
+                var customerInput = JsonConvert.DeserializeObject<Customer>(requestBody);
 
-            //Create Customer
-            result = CreateCustomer(customerInput);
+                //Validate customer
+                ValidateCustomerRequest(customerInput);
+
+                //Create Customer
+                result = CreateCustomer(customerInput);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             return result;
         }
