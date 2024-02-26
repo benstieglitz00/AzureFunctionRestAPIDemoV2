@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using DAL.Models;
-using BusinessLogic.Manager;
+using DAL2.Models;
+using BL2.Manager;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace AzureFunctionRestAPIDemoV2
 {
@@ -21,7 +22,6 @@ namespace AzureFunctionRestAPIDemoV2
         [Function("CreateCustomer")]
         public async Task<IActionResult> CreateCustomer([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "customer")] HttpRequest req)
         {
-            var test = req;
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
@@ -33,27 +33,26 @@ namespace AzureFunctionRestAPIDemoV2
         }
 
         [Function("GetAllCustomersByAge")]
-        public async Task<IActionResult> GetAllCustomersByAge([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{age}")] HttpRequest req)
+        public async Task<IActionResult> GetAllCustomersByAge([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customers/age")] HttpRequest req, int age)
         {
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            /*
+             * Test calls from postman: http://localhost:7195/api/customers/age?age=45
+             */
 
             CustomerManager cm = new CustomerManager();
 
-            var customer = cm.CreateCustomer(requestBody);
+            var customer = cm.GetCustomerByAge(age);
 
             return new OkObjectResult(customer);
         }
 
         [Function("GetCustomerByID")]
-        public async Task<IActionResult> GetCustomersByID([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customer/{guid}" )] HttpRequest req)
+        public async Task<IActionResult> GetCustomerByID([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "customers/id")] HttpRequest req, Guid guid)
         {
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             CustomerManager cm = new CustomerManager();
 
-            var customer = cm.GetCustomerByID(requestBody);
+            var customer = cm.GetCustomerByID(guid);
 
             return new OkObjectResult(customer);
         }
