@@ -205,7 +205,8 @@ namespace DAL2
                 SQLiteDataReader sqlite_datareader;
                 SQLiteCommand sqlite_cmd;
                 sqlite_cmd = _conn.CreateCommand();
-                sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer WHERE DateOfBirth BETWEEN = " + earliestBirthDate + " AND " + latestBirthDate;
+                sqlite_cmd.CommandText = "SELECT CustomerID, FullName, DateOfBirth FROM Customer " +
+                    "WHERE DateOfBirth BETWEEN = " + earliestBirthDate + " AND " + latestBirthDate;
 
                 _conn.Open();
 
